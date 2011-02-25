@@ -1,38 +1,59 @@
 package com.sharkmob.rest;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public final class RestRouter
+public class RestRouter
 {
 
-	protected static HashMap<String, IResource> routingTable;
-	protected HashMap<String, String> params;
-	
-	public RestRouter()
+	protected static HashMap<String, Class< ? extends IResource>> routingTable;
+	protected Map<String, String> params;
+
+	private static RestRouter instance = null;
+
+	protected RestRouter()
 	{
 		initRoutingTable();
 	}
-	
-	public void addRoute(String url, IResource clazz)
+
+	public static RestRouter getInstance()
+	{
+		if (instance == null)
+		{
+			instance = new RestRouter();
+		}
+		return instance;
+	}
+
+
+	public void addRoute(String url, Class< ? extends IResource> clazz)
 	{
 		if (routingTable == null)
 		{
 			initRoutingTable();
 		}
-		
+
 		if (routingTable != null)
 		{
 			routingTable.put(url, clazz);
 		}
 	}
-	
-	private void  initRoutingTable()
+
+	private void initRoutingTable()
 	{
-		routingTable = new HashMap<String, IResource>();	
+		routingTable = new HashMap<String, Class< ? extends IResource>>();
 	}
-	
-	public static IResource getResource(String path)
+
+	public IResource getResource(String path)
 	{
-		return (IResource) routingTable.get(path);
+		Class<? extends IResource> resource = null;
+		try {
+		    Class<?> clazz = routingTable.get(path);
+		    resource = clazz.asSubclass(IResource.class);
+		    return resource.newInstance();
+		} catch(Exception e) {
+		    e.printStackTrace();
+		}
+		return null;
 	}
 }

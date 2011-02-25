@@ -10,6 +10,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import com.sharkmob.rest.RestRouter;
+
 public class RestServer implements Filter
 {
 	public static enum RequestMethod
@@ -19,35 +21,39 @@ public class RestServer implements Filter
 
 	private RequestMethod requestMethod;
 	private HttpServletRequest request;
+	private IRoutes routes;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException
 	{
 		request = (HttpServletRequest) req;
-		
+
 		requestMethod = RequestMethod.valueOf(request.getMethod());
-		
+
 		String path = request.getRequestURI();
 
 		if (path != null && !path.equals(""))
 		{
 			try
 			{
-				IResource resource = RestRouter.getResource(path);
+				RestRouter router = RestRouter.getInstance();
+				router.params = request.getParameterMap();
+				IResource resource = router.getResource(path);
 				switch (requestMethod)
 				{
-					case GET:
-						res.getWriter().append(resource.doGet()); 
-						break;
-					case POST:
-						resource.doPost();
-						break;
-					case PUT:
-						resource.doPut();
-						break;
-					case DELETE:
-						resource.doDelete();
-						break;
+				case GET:
+					res.getWriter().append(resource.doGet());
+					break;
+				case POST:
+					resource.doPost();
+					break;
+				case PUT:
+					resource.doPut();
+					break;
+				case DELETE:
+					resource.doDelete();
+					break;
 				}
 			}
 			catch (Exception ex)
@@ -64,11 +70,36 @@ public class RestServer implements Filter
 
 	}
 
-
 	@Override
-	public void destroy()	{}
+	public void destroy()
+	{
+	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void init(FilterConfig config) throws ServletException {}
+	public void init(FilterConfig config) throws ServletException
+	{
+		String routesParameter = config.getInitParameter("Routes");
+		Class routesClazz = null;
+		try
+		{
+			routesClazz = Class.forName(routesParameter);
+			routes = (IRoutes) routesClazz.newInstance();
+			routes.init();
+		}
+		catch (InstantiationException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IllegalAccessException e)
+		{
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	}
 
 }
