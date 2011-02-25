@@ -11,9 +11,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.urlfetch.HTTPResponse;
-import com.sharkmob.rest.RestRouter;
-
 public class RestServer implements Filter
 {
 	public static enum RequestMethod
