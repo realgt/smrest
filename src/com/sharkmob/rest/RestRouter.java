@@ -49,8 +49,11 @@ public class RestRouter
 		Class<? extends IResource> resource = null;
 		try {
 		    Class<?> clazz = routingTable.get(path);
-		    resource = clazz.asSubclass(IResource.class);
-		    return resource.newInstance();
+		    if (clazz != null)
+		    {
+		    	resource = clazz.asSubclass(IResource.class);
+			    return resource.newInstance();	
+		    }		    
 		} catch(Exception e) {
 		    e.printStackTrace();
 		}

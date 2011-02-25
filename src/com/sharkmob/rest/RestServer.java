@@ -9,7 +9,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.sharkmob.rest.RestRouter;
 
 public class RestServer implements Filter
@@ -40,21 +42,30 @@ public class RestServer implements Filter
 				RestRouter router = RestRouter.getInstance();
 				router.params = request.getParameterMap();
 				IResource resource = router.getResource(path);
-				switch (requestMethod)
+				if (resource != null)
 				{
-				case GET:
-					res.getWriter().append(resource.doGet());
-					break;
-				case POST:
-					resource.doPost();
-					break;
-				case PUT:
-					resource.doPut();
-					break;
-				case DELETE:
-					resource.doDelete();
-					break;
+					switch (requestMethod)
+					{
+						case GET:
+							res.getWriter().append(resource.doGet());
+							break;
+						case POST:
+							resource.doPost();
+							break;
+						case PUT:
+							resource.doPut();
+							break;
+						case DELETE:
+							resource.doDelete();
+							break;
+					}
 				}
+				else
+				{
+					//this is not a valid resource or we had trouble instantiating it!
+					((HttpServletResponse) res).sendError(HttpServletResponse.SC_NOT_FOUND);
+				}
+				
 			}
 			catch (Exception ex)
 			{
