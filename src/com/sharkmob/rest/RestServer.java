@@ -20,6 +20,7 @@ public class RestServer implements Filter
 
 	private RequestMethod requestMethod;
 	private HttpServletRequest request;
+	private HttpServletResponse response;
 	private IRoutes routes;
 	private RestRouter router = RestRouter.getInstance();
 
@@ -28,6 +29,7 @@ public class RestServer implements Filter
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException
 	{
 		request = (HttpServletRequest) req;
+		response = (HttpServletResponse) res;
 
 		requestMethod = RequestMethod.valueOf(request.getMethod());
 
@@ -44,16 +46,16 @@ public class RestServer implements Filter
 					switch (requestMethod)
 					{
 						case GET:
-							res.getWriter().append(resource.doGet());
+							resource.doGet(request, response);
 							break;
 						case POST:
-							resource.doPost();
+							resource.doPost(request, response);
 							break;
 						case PUT:
-							resource.doPut();
+							resource.doPut(request, response);
 							break;
 						case DELETE:
-							resource.doDelete();
+							resource.doDelete(request, response);
 							break;
 					}
 				}

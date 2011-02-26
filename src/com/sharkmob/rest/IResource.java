@@ -1,5 +1,8 @@
 package com.sharkmob.rest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 public abstract interface IResource
 {
@@ -8,21 +11,21 @@ public abstract interface IResource
 	 * 
 	 * @return the String (json/xml?) representation of the object requested
 	 */
-	public String doGet();
+	public void doGet(HttpServletRequest request, HttpServletResponse response);
 
 	/***
 	 * Handles the Put (aka INSERT) operation
 	 */
-	public void doPut();
+	public void doPut(HttpServletRequest request, HttpServletResponse response);
 
 	/***
 	 * Handles the Post (aka UPDATE) operation
 	 */
-	public void doPost();
+	public void doPost(HttpServletRequest request, HttpServletResponse response);
 	
 
 	/***
 	 * Handles the Delete (aka DELETE?) operation
 	 */
-	public void doDelete();
+	public void doDelete(HttpServletRequest request, HttpServletResponse response);
 }
