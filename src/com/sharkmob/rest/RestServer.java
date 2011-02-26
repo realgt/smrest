@@ -21,6 +21,7 @@ public class RestServer implements Filter
 	private RequestMethod requestMethod;
 	private HttpServletRequest request;
 	private IRoutes routes;
+	private RestRouter router = RestRouter.getInstance();
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -36,9 +37,8 @@ public class RestServer implements Filter
 		{
 			try
 			{
-				RestRouter router = RestRouter.getInstance();
 				router.params = request.getParameterMap();
-				IResource resource = router.getResource(path);
+				IResource resource = router.getResource(filterPath(path));
 				if (resource != null)
 				{
 					switch (requestMethod)
@@ -108,6 +108,24 @@ public class RestServer implements Filter
 			e.printStackTrace();
 		}
 
+	}
+	
+	/***
+	 * takes the path passed in the url and replaces any numbers with pound (#) signs
+	 * @param path
+	 * @return filtered path
+	 */
+	public String filterPath(String path)
+	{
+		for (String partial : path.split("/"))
+		{
+			if (partial.matches("[0-9]+"))
+			{
+				router.params.put("id", partial);
+			}
+		}
+			
+		return path.replaceAll("/[0-9]+","/#");
 	}
 
 }
