@@ -93,7 +93,7 @@ public class RestServer implements Filter
 		{
 			routesClazz = Class.forName(routesParameter);
 			routes = (IRoutes) routesClazz.newInstance();
-			routes.init();
+			routes.setupRoutes();
 		}
 		catch (InstantiationException e)
 		{

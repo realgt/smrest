@@ -1,11 +1,11 @@
 package com.sharkmob.rest;
 
-public class RouterBase
+public class RoutesBase
 {
 	protected 	RestRouter router = RestRouter.getInstance();
 
 
-	public RouterBase()
+	public RoutesBase()
 	{
 	}
 }
