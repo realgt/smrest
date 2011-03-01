@@ -1,6 +1,7 @@
 package com.sharkmob.rest;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -23,6 +24,8 @@ public class RestServer implements Filter
 	private HttpServletResponse response;
 	private IRoutes routes;
 	private RestRouter router = RestRouter.getInstance();
+	private IResource resource;
+	private String resourceId;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -39,8 +42,11 @@ public class RestServer implements Filter
 		{
 			try
 			{
-				router.params = request.getParameterMap();
-				IResource resource = router.getResource(filterPath(path));
+				resource = router.getResource(filterPath(path));
+				resource.setParams(new HashMap<String, String>());
+				resource.getParams().putAll(request.getParameterMap());
+				resource.getParams().put("id", resourceId);
+				
 				if (resource != null)
 				{
 					switch (requestMethod)
@@ -123,7 +129,7 @@ public class RestServer implements Filter
 		{
 			if (partial.matches("[0-9]+"))
 			{
-				router.params.put("id", partial);
+				resourceId = partial;
 			}
 		}
 			

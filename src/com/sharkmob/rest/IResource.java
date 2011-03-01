@@ -1,5 +1,7 @@
 package com.sharkmob.rest;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,4 +30,9 @@ public abstract interface IResource
 	 * Handles the Delete (aka DELETE?) operation
 	 */
 	public void doDelete(HttpServletRequest request, HttpServletResponse response);
+	
+	public void setParams(Map<String, String> params);
+	
+	public Map<String, String> getParams();
+	
 }

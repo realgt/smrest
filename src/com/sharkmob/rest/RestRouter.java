@@ -1,13 +1,11 @@
 package com.sharkmob.rest;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class RestRouter
 {
 
 	protected static HashMap<String, Class< ? extends IResource>> routingTable;
-	protected Map<String, String> params;
 
 	private static RestRouter instance = null;
 
