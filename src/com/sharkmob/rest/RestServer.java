@@ -2,6 +2,8 @@ package com.sharkmob.rest;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,7 +29,6 @@ public class RestServer implements Filter
 	private IResource resource;
 	private String resourceId;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException
 	{
@@ -42,7 +43,6 @@ public class RestServer implements Filter
 		{
 			requestMethod = RequestMethod.valueOf(request.getMethod());
 		}
-		
 
 		String path = request.getRequestURI();
 
@@ -51,42 +51,43 @@ public class RestServer implements Filter
 			try
 			{
 				resource = router.getResource(filterPath(path));
-				resource.setParams(new HashMap<String, String>());
-				resource.getParams().putAll(request.getParameterMap());
-				resource.getParams().put("id", resourceId);
-				
-				
+
 				if (resource != null)
 				{
+					resource.setParams(new HashMap<String, String>());
+					resource.getParams().putAll(getRequestParams(request));
+					if (resourceId != null) resource.getParams().put("id", resourceId);
+
 					switch (requestMethod)
 					{
-						case GET:
-							resource.doGet(request, response);
-							break;
-						case POST:
-							resource.doPost(request, response);
-							response.setStatus(HttpServletResponse.SC_ACCEPTED);
-							break;
-						case PUT:
-							resource.doPut(request, response);
-							response.setStatus(HttpServletResponse.SC_CREATED);
-							break;
-						case DELETE:
-							resource.doDelete(request, response);
-							response.setStatus(HttpServletResponse.SC_GONE);
-							break;
+					case GET:
+						resource.doGet(request, response);
+						break;
+					case POST:
+						resource.doPost(request, response);
+						response.setStatus(HttpServletResponse.SC_ACCEPTED);
+						break;
+					case PUT:
+						resource.doPut(request, response);
+						response.setStatus(HttpServletResponse.SC_CREATED);
+						break;
+					case DELETE:
+						resource.doDelete(request, response);
+						response.setStatus(HttpServletResponse.SC_GONE);
+						break;
 					}
 				}
 				else
 				{
-					//this is not a valid resource or we had trouble instantiating it!
+					// this is not a valid resource or we had trouble
+					// instantiating it!
 					((HttpServletResponse) res).sendError(HttpServletResponse.SC_NOT_FOUND);
 				}
-				
+
 			}
 			catch (Exception ex)
 			{
-				//chain.doFilter(req, res);
+				// chain.doFilter(req, res);
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
@@ -94,7 +95,7 @@ public class RestServer implements Filter
 		else
 		{
 			// move on to the next request
-			//chain.doFilter(req, res);
+			// chain.doFilter(req, res);
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 
@@ -131,9 +132,11 @@ public class RestServer implements Filter
 		}
 
 	}
-	
+
 	/***
-	 * takes the path passed in the url and replaces any numbers with pound (#) signs
+	 * takes the path passed in the url and replaces any numbers with pound (#)
+	 * signs
+	 * 
 	 * @param path
 	 * @return filtered path
 	 */
@@ -146,8 +149,19 @@ public class RestServer implements Filter
 				resourceId = partial;
 			}
 		}
-			
-		return path.replaceAll("/[0-9]+","/#");
+
+		return path.replaceAll("/[0-9]+", "/#");
 	}
 
+	@SuppressWarnings("unchecked")
+	private HashMap<String, String> getRequestParams(HttpServletRequest request)
+	{
+		HashMap<String, String> params = new HashMap<String, String>();
+		for (Iterator iterator = request.getParameterMap().entrySet().iterator(); iterator.hasNext();)
+		{
+			Map.Entry entry = (Map.Entry) iterator.next();
+			params.put(entry.getKey().toString(), ((String[])entry.getValue())[0]);
+		}
+		return params;
+	}
 }
