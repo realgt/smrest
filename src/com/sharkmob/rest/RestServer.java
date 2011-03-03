@@ -34,7 +34,15 @@ public class RestServer implements Filter
 		request = (HttpServletRequest) req;
 		response = (HttpServletResponse) res;
 
-		requestMethod = RequestMethod.valueOf(request.getMethod());
+		if (request.getParameter("method") != null)
+		{
+			requestMethod = RequestMethod.valueOf(request.getParameter("method"));
+		}
+		else
+		{
+			requestMethod = RequestMethod.valueOf(request.getMethod());
+		}
+		
 
 		String path = request.getRequestURI();
 
@@ -46,6 +54,7 @@ public class RestServer implements Filter
 				resource.setParams(new HashMap<String, String>());
 				resource.getParams().putAll(request.getParameterMap());
 				resource.getParams().put("id", resourceId);
+				
 				
 				if (resource != null)
 				{
@@ -77,14 +86,16 @@ public class RestServer implements Filter
 			}
 			catch (Exception ex)
 			{
-				chain.doFilter(req, res);
+				//chain.doFilter(req, res);
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
 
 		else
 		{
 			// move on to the next request
-			chain.doFilter(req, res);
+			//chain.doFilter(req, res);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 
 	}
