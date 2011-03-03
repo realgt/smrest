@@ -56,12 +56,15 @@ public class RestServer implements Filter
 							break;
 						case POST:
 							resource.doPost(request, response);
+							response.setStatus(HttpServletResponse.SC_ACCEPTED);
 							break;
 						case PUT:
 							resource.doPut(request, response);
+							response.setStatus(HttpServletResponse.SC_CREATED);
 							break;
 						case DELETE:
 							resource.doDelete(request, response);
+							response.setStatus(HttpServletResponse.SC_GONE);
 							break;
 					}
 				}
