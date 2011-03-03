@@ -1,0 +1,48 @@
+Implementing a REST api using smrest
+
+This is a quick how to on using the smrest library on github
+
+
+Setting up smrest lib project
+After cloning the smrest project, set it up as an eclipse project (import existing project into workspace, etc). This project is interesting because it doesn't have its own src folder as part of its build path, and in fact does not build independently. It exists as a dependent lib project. It requires that the "main" project include the required jars in appengine for smrest to run correctly.
+
+Setting up your own project 
+Setup an Eclipse "Web Application Project" that includes the Google Appengine SDK.
+Right click your project and go to Properties->Build Path. Click on Link Source. Navigate in the Link Source dialog to smrest/src/com/sharkmob/rest. Click open/select on the dialog box to continue. Close out the dialogs accepting the default options. This should create a weird "rest" folder alongside your project's src folder. 
+Drag that "rest" folder into your projects src/com/sharkmob/ (default packagename for all our projects!) so that there exists in your project a src/com/sharkmob/rest folder that is a Linked folder to smrest/src/com/sharkmob/rest. 
+Go back into Project Properties->Build Path and remove the linked source to smrest. This should allow the project to build correctly.
+
+Implementing smrest Rest classes
+To use smrest in your project, you need to configure your web.xml to use the smrest RestServer filter and then tell it where to find your "Routes" class. Your routes are your resource paths for your REST api. 
+First create a class that extends RoutesBase and implements IRoutes. You'll have to implement the setupRoutes() method in which basically you do the following:
+
+router.addRoute("/users/", Users.class);
+You can add as many routes as you like, provided the paths are not the same. 
+Modify your project's web.xml to include the following:
+
+    <filter>
+        <filter-name>RestServer</filter-name>
+        <filter-class>com.sharkmob.rest.RestServer</filter-class>
+        <init-param>
+            <param-name>Routes</param-name>
+            <param-value>com.sharkmob.smresttest.YourRoutesClass</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>RestServer</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+Of course you'll need to change the YourRoutesClass reference.
+
+Extras
+You can use # characters to represent IDs in your paths. For example the path on your server /users/12345 can be setup in your Routes class with the following:
+
+router.addRoute("/users/#", Users.class);
+
+You can use this in conjunction with further resources on the path, such as /users/12345/prefs
+
+router.addRoute("/users/#/prefs", UserPrefs.class);
+
+Of course, you'll need classes for your routes to point to, such as the Users.class and UserPrefs.class file referenced above. These resource files need to implement com.sharkmob.rest.IResource. They will have access to a javax.servlet.http.HttpServletRequest object and a javax.servlet.http.HttpServletResponse object. 
