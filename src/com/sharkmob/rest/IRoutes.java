@@ -8,5 +8,5 @@ package com.sharkmob.rest;
  */
 public interface IRoutes
 {
-	public void setupRoutes();
+	public void setupRoutes(RestRouter router);
 }

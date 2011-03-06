@@ -121,7 +121,7 @@ public class RestServer implements Filter
 		{
 			routesClazz = Class.forName(routesParameter);
 			routes = (IRoutes) routesClazz.newInstance();
-			routes.setupRoutes();
+			routes.setupRoutes(router);
 		}
 		catch (InstantiationException e)
 		{
