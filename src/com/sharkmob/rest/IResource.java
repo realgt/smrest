@@ -13,23 +13,23 @@ public abstract interface IResource
 	 * 
 	 * @return the String (json/xml?) representation of the object requested
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response);
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws RestException;
 
 	/***
 	 * Handles the Put (aka INSERT) operation
 	 */
-	public void doPut(HttpServletRequest request, HttpServletResponse response);
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws RestException;
 
 	/***
 	 * Handles the Post (aka UPDATE) operation
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response);
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws RestException;
 	
 
 	/***
 	 * Handles the Delete (aka DELETE?) operation
 	 */
-	public void doDelete(HttpServletRequest request, HttpServletResponse response);
+	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws RestException;
 	
 	public void setParams(Map<String, String> params);
 	

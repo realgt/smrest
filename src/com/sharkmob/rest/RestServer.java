@@ -62,6 +62,7 @@ public class RestServer implements Filter
 					{
 					case GET:
 						resource.doGet(request, response);
+						response.setStatus(HttpServletResponse.SC_OK);
 						break;
 					case POST:
 						resource.doPost(request, response);
@@ -84,6 +85,10 @@ public class RestServer implements Filter
 					((HttpServletResponse) res).sendError(HttpServletResponse.SC_NOT_FOUND);
 				}
 
+			}
+			catch (RestException rex)
+			{
+				response.setStatus(rex.statusCode);
 			}
 			catch (Exception ex)
 			{
