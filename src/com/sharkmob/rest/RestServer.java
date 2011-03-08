@@ -46,7 +46,7 @@ public class RestServer implements Filter
 
 		String path = request.getRequestURI();
 
-		if (path != null && !path.equals(""))
+		if (isValidPath(path))
 		{
 			try
 			{
@@ -147,6 +147,7 @@ public class RestServer implements Filter
 	 */
 	public String filterPath(String path)
 	{
+		resourceId = null;
 		for (String partial : path.split("/"))
 		{
 			if (partial.matches("[0-9]+"))
@@ -168,5 +169,13 @@ public class RestServer implements Filter
 			params.put(entry.getKey().toString(), ((String[])entry.getValue())[0]);
 		}
 		return params;
+	}
+	
+	private boolean isValidPath(String path)
+	{
+		return (path != null 
+				&& !("/favicon.ico").equals(path)
+				&& !("").equals(path)
+				);
 	}
 }
