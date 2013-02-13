@@ -8,8 +8,12 @@ After cloning the smrest project, set it up as an eclipse project (import existi
 
 Setting up your own project 
 Setup an Eclipse "Web Application Project" that includes the Google Appengine SDK.
-Right click your project and go to Properties->Build Path. Click on Link Source. Navigate in the Link Source dialog to smrest/src/com/sharkmob/rest. Click open/select on the dialog box to continue. Close out the dialogs accepting the default options. This should create a weird "rest" folder alongside your project's src folder. 
-Drag that "rest" folder into your projects src/com/sharkmob/ (default packagename for all our projects!) so that there exists in your project a src/com/sharkmob/rest folder that is a Linked folder to smrest/src/com/sharkmob/rest. 
+Right click your project and go to Properties->Build Path. Click on Link Source. 
+Navigate in the Link Source dialog to smrest/src/com/example/rest. 
+Click open/select on the dialog box to continue. 
+Close out the dialogs accepting the default options. 
+This should create a weird "rest" folder alongside your project's src folder. 
+Drag that "rest" folder into your projects src/com/example/  so that there exists in your project a src/com/example/rest folder that is a Linked folder to smrest/src/com/example/rest. 
 Go back into Project Properties->Build Path and remove the linked source to smrest. This should allow the project to build correctly.
 
 Implementing smrest Rest classes
@@ -22,10 +26,10 @@ Modify your project's web.xml to include the following:
 
     <filter>
         <filter-name>RestServer</filter-name>
-        <filter-class>com.sharkmob.rest.RestServer</filter-class>
+        <filter-class>com.example.rest.RestServer</filter-class>
         <init-param>
             <param-name>Routes</param-name>
-            <param-value>com.sharkmob.smresttest.YourRoutesClass</param-value>
+            <param-value>com.example.smresttest.YourRoutesClass</param-value>
         </init-param>
     </filter>
 
@@ -45,4 +49,4 @@ You can use this in conjunction with further resources on the path, such as /use
 
 router.addRoute("/users/#/prefs", UserPrefs.class);
 
-Of course, you'll need classes for your routes to point to, such as the Users.class and UserPrefs.class file referenced above. These resource files need to implement com.sharkmob.rest.IResource. They will have access to a javax.servlet.http.HttpServletRequest object and a javax.servlet.http.HttpServletResponse object. 
+Of course, you'll need classes for your routes to point to, such as the Users.class and UserPrefs.class file referenced above. These resource files need to implement com.example.rest.IResource. They will have access to a javax.servlet.http.HttpServletRequest object and a javax.servlet.http.HttpServletResponse object. 
